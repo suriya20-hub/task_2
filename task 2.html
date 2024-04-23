@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+
+  .stopwatch {
+    text-align: center;
+  }
+
+  #display {
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+
+  button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+  }
+
+  #laps {
+    text-align: left;
+  }
+</style>
+</head>
+<body>
+<div class="stopwatch">
+  <div id="display">00:00:00</div>
+  <button id="startStop" onclick="startStop()">Start</button>
+  <button id="reset" onclick="reset()">Reset</button>
+  <button id="lap" onclick="lap()">Lap</button>
+  <div id="laps"></div>
+</div>
+<script>
+  let startTime;
+  let elapsedTime = 0;
+  let timerInterval;
+
+  function startStop() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById("startStop").innerText = "Start";
+    } else {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(updateDisplay, 10);
+      document.getElementById("startStop").innerText = "Stop";
+    }
+  }
+
+  function reset() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    elapsedTime = 0;
+    updateDisplay();
+    document.getElementById("startStop").innerText = "Start";
+    document.getElementById("laps").innerHTML = "";
+  }
+
+  function updateDisplay() {
+    const currentTime = Date.now();
+    elapsedTime = currentTime - startTime;
+    const formattedTime = formatTime(elapsedTime);
+    document.getElementById("display").innerText = formattedTime;
+  }
+
+  function formatTime(milliseconds) {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const millisecondsFormatted = Math.floor((milliseconds % 1000) / 10)
+      .toString()
+      .padStart(2, "0");
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}:${millisecondsFormatted}`;
+  }
+
+  function lap() {
+    const lapTime = elapsedTime;
+    const formattedTime = formatTime(lapTime);
+    const lapsDiv = document.getElementById("laps");
+    const lapDiv = document.createElement("div");
+    lapDiv.innerText = formattedTime;
+    lapsDiv.appendChild(lapDiv);
+  }
+</script>
+</body>
+</html>
